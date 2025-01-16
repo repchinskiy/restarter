@@ -22,8 +22,7 @@ function prepare_python_env {
   if [ -d "/root/restarter/venv" ]; then
     echo "venv exists, it's ok"
     sudo -u root bash << EOF
-    source /root/checker/venv/bin/activate
-    source /root/checker_tg/venv/bin/activate
+    source /root/restarter/venv/bin/activate
     pip install -r /root/restarter/restarter/requirements.txt
 EOF
     return
@@ -43,8 +42,7 @@ EOF
     
     # Активируем виртуальное окружение и устанавливаем зависимости от пользователя root
     sudo -u root bash << EOF
-    source /root/checker/venv/bin/activate
-    source /root/checker_tg/venv/bin/activate
+    source /root/restarter/venv/bin/activate
     pip install -r /root/restarter/restarter/requirements.txt
 EOF
   fi
@@ -63,15 +61,15 @@ Restart=always
 RestartSec=3
 LimitNOFILE=65535
 #todo тут на основных аках не прокатит
-ExecStart=/root/checker_tg/venv/bin/python3 /root/restarter/restarter/restarter.py $TG_URL $TG_CHAT_ID $CMD_URL
+ExecStart=/root/restarter/venv/bin/python3 /root/restarter/restarter/restarter.py $TG_URL $TG_CHAT_ID $CMD_URL
 #ExecStart=/root/.pyenv/versions/3.11.10/bin/python3.11 /root/restarter/restarter/restarter.py $TG_URL $TG_CHAT_ID $CMD_URL
 [Install]
 WantedBy=multi-user.target
 EOF
 
   sudo systemctl daemon-reload
-  sudo systemctl enable checker_tg
-  sudo systemctl restart checker_tg
+  sudo systemctl enable restarter
+  sudo systemctl restart restarter
 }
 
 function main {
