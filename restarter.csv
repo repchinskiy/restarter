@@ -1,7 +1,7 @@
-#0.Mock(s);exit 1; exit 0
+#0.Mock(s);exit 1;exit 0
 1.Restart Titan(d);sudo docker ps | grep titan > /dev/null 2>&1 && exit 0 || exit 1;sudo docker restart titan
-#2.Sonaric(cli);sonaric node-info > /dev/null 2>&1 && exit 0 || exit 1
-#3.OpenLedger(d);sudo docker ps | grep opl_worker > /dev/null 2>&1 && sudo docker ps | grep opl_scraper > /dev/null 2>&1 && exit 0 || exit 1
-#4.Multiple(cli);pgrep --count multiple- > /dev/null 2>&1 && exit 0 || exit 1
-#5.GaiaNet(cli);pgrep --count wasmedge > /dev/null 2>&1 && tmux ls | grep gaianet > /dev/null 2>&1 && exit 0 || exit 1
-#6.Multiple(cli);pgrep --count multiple-node > /dev/null 2>&1 && exit 0 || exit 1
+#2.Sonaric(cli);;sonaric node-info > /dev/null 2>&1 && exit 0 || exit 1
+#3.OpenLedger(d);;sudo docker ps | grep opl_worker > /dev/null 2>&1 && sudo docker ps | grep opl_scraper > /dev/null 2>&1 && exit 0 || exit 1
+#4.Multiple(cli);;pgrep --count multiple- > /dev/null 2>&1 && exit 0 || exit 1
+#5.GaiaNet(cli);;pgrep --count wasmedge > /dev/null 2>&1 && tmux ls | grep gaianet > /dev/null 2>&1 && exit 0 || exit 1
+#6.Multiple(cli);;pgrep --count multiple-node > /dev/null 2>&1 && exit 0 || exit 1
