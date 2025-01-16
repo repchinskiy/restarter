@@ -14,6 +14,7 @@ TELEGRAM_ALERT_BASE_URL = ""
 chat_id = ""
 check_commands_url = []
 
+
 def get_ip_address():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(("8.8.8.8", 80))
@@ -53,12 +54,14 @@ def parse_data(raw_data):
     lines = raw_data.strip().split("\n")
     return [line.split(";") for line in lines]
 
+
 def writeln(msg):
     sys.stdout.write(msg + "\n")
 
 
 def println(msg):
     sys.stdout.write(str(datetime.datetime.now()) + ": " + msg + "\n")
+
 
 def process():
     for commandUrl in check_commands_url:
@@ -70,6 +73,7 @@ def process():
             if cmd_name.startswith("#"): continue
             result = subprocess.run(cmd_check, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             status = result.returncode
+            println(f'status: {status}')
             if not status:
                 subprocess.run(cmd_restart, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 content = f'{get_ip_address()}\n{cmd_name}'
@@ -88,6 +92,7 @@ def process():
     #     status_metric = "active" if status else "INACTIVE"
     #     metrics_output.append(f'{node_name}: {status_metric}')
 
+
 def run_updater():
     while True:
         process()
@@ -103,9 +108,16 @@ def run_updater_background():
 def get_sys_info():
     return get_ip_address()
 
+
 def test():
     writeln("Test mode: ")
 
+    # nodes_data = parse_data("1.Restart Titan(d);sudo docker ps | grep titan > /dev/null 2>&1 && exit 0 || exit 1;sudo docker restart titan")
+    nodes_data = parse_data("#0.Mock(s);exit 1; exit 0")
+    for cmd_name, cmd_check, cmd_restart in nodes_data:
+        println(f'cmd_name: {cmd_name} cmd_check:{cmd_check} cmd_restart: {cmd_restart}')
+
+
 if __name__ == "__main__":
-    # test()
-    init()
+    test()
+    # init()
