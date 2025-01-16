@@ -74,7 +74,7 @@ def process():
             result = subprocess.run(cmd_check, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             status = result.returncode
             println(f'status: {status}')
-            if not status:
+            if not status == 0:
                 subprocess.run(cmd_restart, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 content = f'{get_ip_address()}\n{cmd_name}'
                 println(f'tg_url: {TELEGRAM_ALERT_BASE_URL} chat_id: {chat_id} text: {content}')
