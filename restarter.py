@@ -80,17 +80,22 @@ def process():
                 println(f'tg_url: {TELEGRAM_ALERT_BASE_URL} chat_id: {chat_id} text: {content}')
                 requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': content})
 
-    # f = open("/root/checker_tg/checker_tg/check_commands_local.csv", "r")
-    # lines = f.readlines()
-    # f.close()
-    # nodes_data = [line.split(";") for line in lines]
-    #
-    # for node_name, command in nodes_data:
-    #     println(f'node_name: {node_name} command:{command}')
-    #     if node_name.startswith("#"): continue
-    #     status = check_node(command, ip_addr)
-    #     status_metric = "active" if status else "INACTIVE"
-    #     metrics_output.append(f'{node_name}: {status_metric}')
+    f = open("/root/restarter/restarter/restarter_local.csv", "r")
+    lines = f.readlines()
+    f.close()
+    nodes_data = [line.split(";") for line in lines]
+
+    for cmd_name, cmd_check, cmd_restart in nodes_data:
+        println(f'cmd_name: {cmd_name} cmd_check:{cmd_check} cmd_restart: {cmd_restart}')
+        if cmd_name.startswith("#"): continue
+        result = subprocess.run(cmd_check, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        status = result.returncode
+        println(f'status: {status}')
+        if not status == 0:
+            subprocess.run(cmd_restart, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            content = f'{get_ip_address()}\n{cmd_name}'
+            println(f'tg_url: {TELEGRAM_ALERT_BASE_URL} chat_id: {chat_id} text: {content}')
+            requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': content})
 
 
 def run_updater():
