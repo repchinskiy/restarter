@@ -1,0 +1,1 @@
+Restart Spheron(d);sudo docker ps | grep fizz > /dev/null 2>&1 && exit 0 || exit 1;sudo docker-compose -f .spheron/fizz/docker-compose.yml restart
