@@ -70,6 +70,7 @@ EOF
   sudo systemctl daemon-reload
   sudo systemctl enable restarter
   sudo systemctl restart restarter
+  sudo systemctl status restarter
 }
 
 function main {
