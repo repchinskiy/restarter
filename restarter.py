@@ -92,7 +92,10 @@ def process():
         status = result.returncode
         println(f'status: {status}')
         if not status == 0:
+            println(f'cmd_restart: {cmd_restart}')
             subprocess.run(cmd_restart, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            status = result.returncode
+            println(f'status: {status}')
             content = f'{get_ip_address()}\n{cmd_name}'
             println(f'tg_url: {TELEGRAM_ALERT_BASE_URL} chat_id: {chat_id} text: {content}')
             requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': content})
@@ -114,13 +117,21 @@ def get_sys_info():
     return get_ip_address()
 
 
-def test():
+def test(cmd=None):
     writeln("Test mode: ")
 
     # nodes_data = parse_data("1.Restart Titan(d);sudo docker ps | grep titan > /dev/null 2>&1 && exit 0 || exit 1;sudo docker restart titan")
-    nodes_data = parse_data("#0.Mock(s);exit 1; exit 0")
-    for cmd_name, cmd_check, cmd_restart in nodes_data:
-        println(f'cmd_name: {cmd_name} cmd_check:{cmd_check} cmd_restart: {cmd_restart}')
+    # nodes_data = parse_data("#0.Mock(s);exit 1; exit 0")
+    # for cmd_name, cmd_check, cmd_restart in nodes_data:
+    #     println(f'cmd_name: {cmd_name} cmd_check:{cmd_check} cmd_restart: {cmd_restart}')
+    # cmd = "sudo docker-compose -f ~/.spheron/fizz/docker-compose.yml restart"
+    cmd = "sudo docker-compose -f /root/.spheron/fizz/docker-compose.yml restart"
+    println(f'cmd: {cmd}')
+    result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # result = subprocess.run([cmd], capture_output=True, text=True)
+    rcode = result.returncode
+    println(f'result.returncode: {rcode}')
+    println(f'result.stdout: {result.stdout}')
 
 
 if __name__ == "__main__":
