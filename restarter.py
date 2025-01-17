@@ -64,38 +64,37 @@ def println(msg):
 
 
 def process():
+    nodes_data = []
     for commandUrl in check_commands_url:
         println(f'command_url: {commandUrl}')
         raw_data = fetch_data(commandUrl)
-        nodes_data = parse_data(raw_data)
-        for cmd_name, cmd_check, cmd_restart in nodes_data:
-            println(f'cmd_name: {cmd_name} cmd_check:{cmd_check} cmd_restart: {cmd_restart}')
-            if cmd_name.startswith("#"): continue
-            result = subprocess.run(cmd_check, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            status = result.returncode
-            println(f'status: {status}')
-            if not status == 0:
-                subprocess.run(cmd_restart, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                content = f'{get_ip_address()}\n{cmd_name}'
-                println(f'tg_url: {TELEGRAM_ALERT_BASE_URL} chat_id: {chat_id} text: {content}')
-                requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': content})
+        nodes_data = nodes_data + parse_data(raw_data)
 
     f = open("/root/restarter/restarter/restarter_local.csv", "r")
     lines = f.readlines()
     f.close()
-    nodes_data = [line.split(";") for line in lines]
+    # nodes_data = nodes_data + [line.split(";") for line in lines]
+    nodes_data = nodes_data + [line.strip().split(";") for line in lines]
 
     for cmd_name, cmd_check, cmd_restart in nodes_data:
+        cmd_restart = cmd_restart.replace("\r","")
         println(f'cmd_name: {cmd_name} cmd_check:{cmd_check} cmd_restart: {cmd_restart}')
         if cmd_name.startswith("#"): continue
         result = subprocess.run(cmd_check, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         status = result.returncode
         println(f'status: {status}')
         if not status == 0:
+            # subprocess.run(cmd_restart, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             println(f'cmd_restart: {cmd_restart}')
-            subprocess.run(cmd_restart, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            status = result.returncode
-            println(f'status: {status}')
+            cmd_args = cmd_restart.split(" ")
+            println(f'cmd_args: {cmd_args}')
+            # result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            result = subprocess.run(cmd_args, capture_output=True, text=True)
+            rcode = result.returncode
+            println(f'result.returncode: {rcode}')
+            println(f'result.stdout: {result.stdout}')
+            println(f'result.stderr: {result.stderr}')
+
             content = f'{get_ip_address()}\n{cmd_name}'
             println(f'tg_url: {TELEGRAM_ALERT_BASE_URL} chat_id: {chat_id} text: {content}')
             requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': content})
@@ -125,13 +124,17 @@ def test(cmd=None):
     # for cmd_name, cmd_check, cmd_restart in nodes_data:
     #     println(f'cmd_name: {cmd_name} cmd_check:{cmd_check} cmd_restart: {cmd_restart}')
     # cmd = "sudo docker-compose -f ~/.spheron/fizz/docker-compose.yml restart"
+
     cmd = "sudo docker-compose -f /root/.spheron/fizz/docker-compose.yml restart"
     println(f'cmd: {cmd}')
-    result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    # result = subprocess.run([cmd], capture_output=True, text=True)
+    cmd_args = cmd.split(" ")
+    println(f'cmd_args: {cmd_args}')
+    # result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    result = subprocess.run(cmd_args, capture_output=True, text=True)
     rcode = result.returncode
     println(f'result.returncode: {rcode}')
     println(f'result.stdout: {result.stdout}')
+    println(f'result.stderr: {result.stderr}')
 
 
 if __name__ == "__main__":
