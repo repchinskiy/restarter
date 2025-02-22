@@ -2,6 +2,7 @@
 1.Restart Titan(d);sudo docker ps | grep titan > /dev/null 2>&1 && exit 0 || exit 1;sudo docker restart titan
 2.Restart GaiaNet(cli);pgrep --count wasmedge > /dev/null 2>&1 && tmux ls | grep gaianet > /dev/null 2>&1 && exit 0 || exit 1;sh /root/gaianet.restart.sh
 3.Restart Initverse(s);sudo service initverse status | grep running > /dev/null 2>&1 && exit 0 || exit 1;sudo service initverse restart
+4.Restart Privasea(d);sudo docker ps | grep privanetix-node > /dev/null 2>&1 && exit 0 || exit 1;sudo docker restart privanetix-node
 #2.Restart GaiaNet(cli);pgrep --count wasmedge > /dev/null 2>&1 && tmux ls | grep gaianet > /dev/null 2>&1 && exit 0 || exit 1;echo 'gaianet stop && gaianet start && sleep 5 && gaianet stop && gaianet start' > gaianet.restart.sh && chmod +x gaianet.restart.sh && source gaianet.restart.sh
 #2.GaiaNet(cli);pgrep --count wasmedge > /dev/null 2>&1 && tmux ls | grep gaianet > /dev/null 2>&1 && exit 0 || exit 1;gaianet stop && gaianet start
 #2.Sonaric(cli);;sonaric node-info > /dev/null 2>&1 && exit 0 || exit 1
