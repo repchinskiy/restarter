@@ -1,3 +1,4 @@
 #Restart Spheron(d);sudo docker ps | grep fizz > /dev/null 2>&1 && exit 0 || exit 1;sudo docker-compose -f /root/.spheron/fizz/docker-compose.yml restart
 #Restart Hyperlane(d);docker ps | grep hyperlane > /dev/null 2>&1 && exit 0 || exit 1;sudo docker restart hyperlane
-Restart layeredge_cli_node(go);pgrep --count light-node > /dev/null 2>&1 && exit 0 || exit 1;tmux send-keys -t layeredge_cli_node "cd ~/light-node && ./light-node" Enter
+#Restart layeredge_cli_node(go);pgrep --count light-node > /dev/null 2>&1 && exit 0 || exit 1;tmux send-keys -t layeredge_cli_node "cd ~/light-node && ./light-node" Enter
+Restart layeredge_cli_node(go);pgrep --count light-node > /dev/null 2>&1 && exit 0 || exit 1;sh ~/layeredge_restart.sh
